@@ -1,10 +1,17 @@
 package Methods;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Joseph on 3/10/2017.
@@ -17,14 +24,6 @@ public class master_methods {
 
     public static ChromeDriver driver;
 
-    public static void setupChromeDriver()
-    {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Joseph\\Desktop\\automation\\jars\\chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("start-maximized");
-        driver = new ChromeDriver();
-    }
-
     public static void setupChromeDriver(String url)
     {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Joseph\\Desktop\\automation\\jars\\chromedriver.exe");
@@ -32,6 +31,30 @@ public class master_methods {
         options.addArguments("start-maximized");
         driver = new ChromeDriver();
         driver.get(url);
+    }
+
+    /******************
+    ***   Browser   ***
+    ******************/
+
+    public void closeBrowser()
+    {
+        driver.quit();
+    }
+
+    public void refreshPage(int seconds)
+    {
+        driver.navigate().refresh();
+        waitFor(seconds);
+    }
+
+    /***************
+    ***   Page   ***
+    ***************/
+
+    public void waitForPageToLoad(int waitTime)
+    {
+        driver.manage().timeouts().pageLoadTimeout(waitTime, TimeUnit.SECONDS);
     }
 
     /*****************************
@@ -72,6 +95,11 @@ public class master_methods {
             }
             System.out.println("Element did not appear");
         }
+    }
+
+    public List<WebElement> getWebElements(String xpath)
+    {
+        return driver.findElements(By.xpath(xpath));
     }
 
     /*******************************
@@ -140,14 +168,64 @@ public class master_methods {
         }
     }
 
-    /****************
-    ***   Other   ***
-    ****************/
+    public boolean isElementDisplayed(String xpath)
+    {
+        try
+        {
+            driver.findElement(By.xpath(xpath)).isDisplayed();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    /***************
+    ***   Text   ***
+    ***************/
 
     public static void clearAndEnterText(String xpath, String text)
     {
         driver.findElement(By.xpath(xpath)).clear();
         driver.findElement(By.xpath(xpath)).sendKeys(text);
+    }
+
+    public boolean isCorrectText(String expectedText, String xpath)
+    {
+        String actualText = driver.findElement(By.xpath(xpath)).getText();
+        if (actualText.equals(expectedText))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /********************
+    ***   Utilities   ***
+    ********************/
+
+    public void takeScreenshot(String name, String directory)
+    {
+        File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File targetFile = new File(directory + name + ".jpg");
+
+        try
+        {
+            FileUtils.copyFile(srcFile, targetFile);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public String getCurrentDate()
+    {
+        DateTimeFormatter timeFormater = DateTimeFormatter.ofPattern("MM/dd/YYYY");
+        LocalDate localDate = LocalDate.now();
+        return timeFormater.format(localDate);
     }
 
 }
