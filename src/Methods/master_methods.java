@@ -1,13 +1,13 @@
 package Methods;
 
-import org.apache.commons.io.FileUtils;
+//import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.File;
-import java.io.IOException;
+//import java.io.File;
+//import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Joseph on 3/10/2017.
+ * For questions reach out to jwalker.depaul@gmail.com
  */
 public class master_methods {
 
@@ -26,10 +27,10 @@ public class master_methods {
 
     public static void setupChromeDriver(String url)
     {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\Joseph\\Desktop\\automation\\jars\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "..\\automation\\jars\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("start-maximized");
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         driver.get(url);
     }
 
@@ -205,7 +206,7 @@ public class master_methods {
     /********************
     ***   Utilities   ***
     ********************/
-
+    /*
     public void takeScreenshot(String name, String directory)
     {
         File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -220,6 +221,7 @@ public class master_methods {
             e.printStackTrace();
         }
     }
+    */
 
     public String getCurrentDate()
     {
